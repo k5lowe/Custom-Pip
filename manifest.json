@@ -1,0 +1,14 @@
+{
+    "manifest_version": 3,
+    "name": "PiBP",
+    "version": "1.0",
+    "description": "Creates a floating PiP window with brightness control.",
+    "permissions": ["activeTab", "scripting"],
+    
+    "action": {
+        "default_title": "Launch Custom PiP"
+    },
+    "background": {
+        "service_worker": "background.js"
+    }
+}
