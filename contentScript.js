@@ -1,11 +1,23 @@
 (function () {
     if (document.getElementById('custom-pip')) return;
+
+
   
     const originalVideo = document.querySelector('video');
+
+
+
     if (!originalVideo) {
       alert("No video found on this page!");
       return;
     }
+
+
+    originalVideo.muted = true;
+    originalVideo.style.filter = "brightness(0)";
+    
+
+
   
     const pip = document.createElement('div');
     pip.id = 'custom-pip';
@@ -19,13 +31,15 @@
       background: black;
       z-index: 99999;
       border-radius: 12px;
-      overflow: hidden;
+      overflow: auto;
       box-shadow: 0 0 10px rgba(0,0,0,0.5);
       resize: both;
       display: flex;
       flex-direction: column;
     `;
+
   
+
     const vid = document.createElement('video');
     vid.srcObject = originalVideo.captureStream();
     vid.autoplay = true;
@@ -37,7 +51,6 @@
       object-fit: contain;
       filter: brightness(1.0);
     `;
-
 
 
 
@@ -54,8 +67,6 @@
   `;
 
 
-
-
     const closeButton = document.createElement('button');
     closeButton.textContent = 'x';
     closeButton.style.cssText = `
@@ -64,7 +75,7 @@
       right: 5px;
       width: 25px;
       height: 25px;
-      background: red;
+      background: gray;
       color: white;
       border: none;
       border-radius: 50%;
@@ -114,14 +125,20 @@
     document.body.appendChild(pip);
   
     pip.onmousedown = function (e) {
-      const offsetX = e.clientX - pip.getBoundingClientRect().left;
-      const offsetY = e.clientY - pip.getBoundingClientRect().top;
-  
+      const rect = pip.getBoundingClientRect();
+      const isResizing =
+        e.clientX > rect.right - 10 && e.clientY > rect.bottom - 10;
+    
+      if (isResizing) return; // Skip drag logic if resizing
+    
+      const offsetX = e.clientX - rect.left;
+      const offsetY = e.clientY - rect.top;
+    
       function onMouseMove(e) {
         pip.style.left = e.clientX - offsetX + 'px';
         pip.style.top = e.clientY - offsetY + 'px';
       }
-  
+    
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', () =>
         document.removeEventListener('mousemove', onMouseMove)
